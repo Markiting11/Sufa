@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>New Admission</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap');
+
+:root {
+  /* Aapka bataya hua naya vibrant background color */
+  --dashboard-bg: #79F7EB; 
+  --primary-color: #4318FF; /* Dashboard Purple/Blue */
+  --secondary-color: #5E35FF;
+  --text-dark: #1B2559;
+  --card-shadow: 0px 20px 45px rgba(0, 0, 0, 0.1);
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: var(--dashboard-bg); /* New Custom BG */
+  font-family: 'Poppins', sans-serif;
+  position: relative;
+  padding: 20px;
+  padding-bottom: 50px;
+  overflow-y: auto;
+  color: var(--text-dark);
+}
+
+/* Slide Style Heading (Ribbon) */
+.heading-container {
+  margin-top: 30px;
+  position: relative;
+  background: linear-gradient(135deg, #4318FF 0%, #707EAE 100%);
+  padding: 14px 70px;
+  border-radius: 20px;
+  box-shadow: 0 12px 25px rgba(67, 24, 255, 0.3);
+  transform: skewX(-12deg); /* Slide Effect */
+  border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.page-title {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 700;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-align: center;
+  transform: skewX(12deg); /* Reset skew for text */
+}
+
+/* Dashboard Style Card */
+.card {
+  width: 100%;
+  max-width: 500px;
+  background: #ffffff;
+  padding: 35px;
+  border-radius: 30px;
+  margin: 30px 0;
+  box-shadow: var(--card-shadow);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+}
+
+label {
+  font-size: 13px;
+  font-weight: 700;
+  margin-top: 18px;
+  display: block;
+  color: var(--text-dark);
+  letter-spacing: 0.3px;
+}
+
+input, select {
+  width: 100%;
+  padding: 14px 16px;
+  margin-top: 8px;
+  border: 1.5px solid #E0E5F2;
+  outline: none;
+  border-radius: 16px;
+  background: #F8FAFF;
+  font-size: 14px;
+  color: var(--text-dark);
+  transition: all 0.2s ease;
+}
+
+input:focus, select:focus {
+  border-color: var(--primary-color);
+  background: #fff;
+  box-shadow: 0 0 0 4px rgba(67, 24, 255, 0.08);
+}
+
+/* Floating Language Toggle */
+#langSwitch {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 10px 22px;
+  font-size: 13px;
+  font-weight: 700;
+  border-radius: 14px;
+  background: #fff;
+  color: var(--primary-color);
+  border: 1.5px solid #E0E5F2;
+  cursor: pointer;
+  z-index: 1000;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+}
+
+#langSwitch:hover {
+  background: var(--primary-color);
+  color: #fff;
+}
+
+/* Buttons */
+.btn {
+  width: 100%;
+  padding: 16px;
+  border: none;
+  border-radius: 18px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.save-btn {
+  margin-top: 35px;
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  color: #fff;
+  box-shadow: 0 10px 25px rgba(67, 24, 255, 0.3);
+}
+
+.back-btn {
+  width: 100%;
+  max-width: 500px;
+  background: #fff;
+  color: var(--primary-color);
+  border: 1.5px solid #E0E5F2;
+  margin-top: 10px;
+}
+
+.btn:hover {
+  transform: translateY(-3px);
+  filter: brightness(1.1);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+}
+
+.msg {
+  text-align: center;
+  margin-top: 20px;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+/* Urdu Layout Styling */
+[dir="rtl"] * {
+  font-family: 'Noto Nastaliq Urdu', serif;
+}
+
+[dir="rtl"] label {
+  text-align: right;
+  line-height: 2.2;
+}
+
+[dir="rtl"] .page-title {
+  font-size: 24px;
+  letter-spacing: 0;
+}
+
+@media (max-width: 480px) {
+  .card { padding: 25px; }
+  .heading-container { padding: 12px 35px; }
+}
+</style>
+</head>
+
+<body>
+
+<button id="langSwitch">اردو</button>
+
+<div class="heading-container">
+  <h1 class="page-title" id="pageTitle">New Admission</h1>
+</div>
+
+<div class="card">
+  <form id="admissionForm">
+
+    <label id="lblAdmissionNo">Admission No</label>
+    <input type="number" name="admissionNo" required>
+
+    <label id="lblStudentName">Student Name</label>
+    <input type="text" name="studentName" required>
+
+    <label id="lblFatherName">Father Name</label>
+    <input type="text" name="fatherName" required>
+
+    <label id="lblClass">Class</label>
+    <input type="text" name="class" required>
+
+    <label id="lblDOB">Date of Birth</label>
+    <input type="date" name="dob" required>
+
+    <label id="lblAdmissionDate">Admission Date</label>
+    <input type="date" name="admissionDate" required>
+
+    <label id="lblGender">Gender</label>
+    <select name="gender">
+      <option value="Male">Male</option>
+      <option value="Female">Female</option>
+    </select>
+
+    <label id="lblContact">Contact</label>
+    <input type="text" name="contact">
+
+    <label id="lblAddress">Address</label>
+    <input type="text" name="address">
+
+    <button type="submit" class="btn save-btn" id="saveBtn">Save Admission</button>
+
+    <div class="msg" id="message"></div>
+  </form>
+</div>
+
+<button class="btn back-btn" onclick="window.location.href='dashboard.html'" id="backBtn">⬅ Back to Dashboard</button>
+
+<script>
+const scriptURL = 'https://script.google.com/macros/s/AKfycbysHurJbhdH0Cn8-1cQhWRCo13IIxN4R9U6LfUFIkqc8qnsT6boq0B4Ujj8nPT1xH75/exec';
+
+const translations = {
+  en: {
+    pageTitle:'New Admission',
+    lblAdmissionNo:'Admission No',
+    lblStudentName:'Student Name',
+    lblFatherName:'Father Name',
+    lblClass:'Class',
+    lblDOB:'Date of Birth',
+    lblAdmissionDate:'Admission Date',
+    lblGender:'Gender',
+    lblContact:'Contact',
+    lblAddress:'Address',
+    saveBtn:'Save Admission',
+    backBtn:'⬅ Back to Dashboard',
+    langSwitch:'اردو',
+    msgSuccess:'✅ Admission Added Successfully',
+    msgError:'❌ Error Saving Data'
+  },
+  ur: {
+    pageTitle:'نیا داخلہ',
+    lblAdmissionNo:'داخلہ نمبر',
+    lblStudentName:'طالب علم کا نام',
+    lblFatherName:'والد کا نام',
+    lblClass:'کلاس',
+    lblDOB:'تاریخ پیدائش',
+    lblAdmissionDate:'تاریخ داخلہ',
+    lblGender:'صنف',
+    lblContact:'رابطہ نمبر',
+    lblAddress:'پتہ',
+    saveBtn:'داخلہ محفوظ کریں',
+    backBtn:'⬅ ڈیش بورڈ پر واپس جائیں',
+    langSwitch:'English',
+    msgSuccess:'✅ داخلہ کامیابی سے شامل ہو گیا',
+    msgError:'❌ ڈیٹا محفوظ کرنے میں خرابی'
+  }
+};
+
+let currentLang = localStorage.getItem('lang') || 'en';
+
+function applyLanguage() {
+  const t = translations[currentLang];
+  document.getElementById('pageTitle').innerText = t.pageTitle;
+  document.getElementById('lblAdmissionNo').innerText = t.lblAdmissionNo;
+  document.getElementById('lblStudentName').innerText = t.lblStudentName;
+  document.getElementById('lblFatherName').innerText = t.lblFatherName;
+  document.getElementById('lblClass').innerText = t.lblClass;
+  document.getElementById('lblDOB').innerText = t.lblDOB;
+  document.getElementById('lblAdmissionDate').innerText = t.lblAdmissionDate;
+  document.getElementById('lblGender').innerText = t.lblGender;
+  document.getElementById('lblContact').innerText = t.lblContact;
+  document.getElementById('lblAddress').innerText = t.lblAddress;
+  document.getElementById('saveBtn').innerText = t.saveBtn;
+  document.getElementById('backBtn').innerText = t.backBtn;
+  document.getElementById('langSwitch').innerText = t.langSwitch;
+  
+  const body = document.body;
+  const btn = document.getElementById('langSwitch');
+  
+  if(currentLang === 'ur') {
+    body.dir = 'rtl';
+    btn.style.right = 'auto';
+    btn.style.left = '20px';
+  } else {
+    body.dir = 'ltr';
+    btn.style.left = 'auto';
+    btn.style.right = '20px';
+  }
+}
+
+document.getElementById('langSwitch').addEventListener('click', ()=>{
+  currentLang = currentLang==='en'?'ur':'en';
+  localStorage.setItem('lang', currentLang);
+  applyLanguage();
+});
+
+applyLanguage();
+
+document.getElementById('admissionForm').addEventListener('submit', function(e){
+  e.preventDefault();
+  const formData = new FormData(this);
+  formData.append('action','addStudent');
+
+  fetch(scriptURL,{ method:'POST', body:formData })
+  .then(res=>res.json())
+  .then(data=>{
+    const t = translations[currentLang];
+    document.getElementById('message').innerHTML = data.status==='success' ? t.msgSuccess : t.msgError;
+    if(data.status==='success') this.reset();
+  })
+  .catch(()=>{ document.getElementById('message').innerHTML='⚠️ Server Error'; });
+});
+</script>
+
+</body>
+</html>

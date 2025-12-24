@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kharij (Withdrawal) Entry</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap');
+    
+    * { 
+      box-sizing: border-box; 
+      margin: 0; 
+      padding: 0; 
+      font-family: 'Montserrat', sans-serif; 
+    }
+
+    body {
+      /* min-height use kiya taake scroll enable ho sake agar content bada ho */
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg,#f6d365,#fda085);
+      padding: 40px 20px; /* Top/Bottom padding badha di taake space mile */
+      overflow-y: auto; /* Pura page scroll allow karega */
+    }
+
+    /* Language Toggle Button */
+    #langSwitch {
+      position: fixed;
+      top: 15px;
+      right: 15px;
+      padding: 8px 16px;
+      font-size: 14px;
+      font-weight: 600;
+      border-radius: 20px;
+      background: white;
+      color: #333;
+      border: 1px solid #ccc;
+      cursor: pointer;
+      z-index: 1000;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+
+    .form-container {
+      background: #f0f0f0;
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 15px 15px 30px #bebebe, -15px -15px 30px #ffffff;
+      width: 100%;
+      max-width: 450px;
+      /* Fixed height hatadi taake content ke mutabiq resize ho */
+      margin: auto;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 25px;
+      color: #333;
+      font-size: 24px;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 14px;
+      margin-bottom: 18px;
+      border-radius: 12px;
+      border: none;
+      outline: none;
+      background: #e0e0e0;
+      box-shadow: inset 4px 4px 8px #bebebe, inset -4px -4px 8px #ffffff;
+      font-size: 16px;
+    }
+
+    textarea { 
+      resize: none; 
+      height: 80px; 
+    }
+
+    .btn {
+      width: 100%;
+      padding: 15px;
+      border-radius: 12px;
+      border: none;
+      color: #fff;
+      font-size: 17px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-bottom: 12px;
+    }
+
+    #submitBtn {
+      background: linear-gradient(145deg, #4facfe, #00f2fe);
+      box-shadow: 4px 4px 10px rgba(0,0,0,0.1);
+    }
+
+    #backBtn {
+      background: linear-gradient(145deg, #666, #444);
+      box-shadow: 4px 4px 10px rgba(0,0,0,0.1);
+      margin-bottom: 0; /* Last button ka margin khatam */
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      filter: brightness(1.1);
+      box-shadow: 6px 6px 15px rgba(0,0,0,0.15);
+    }
+
+    /* Urdu Specific adjustments */
+    [dir="rtl"] * {
+      font-family: 'Noto Nastaliq Urdu', serif;
+      line-height: 2;
+    }
+
+    [dir="rtl"] h1 {
+      font-size: 26px;
+      margin-bottom: 30px;
+    }
+
+    [dir="rtl"] input, [dir="rtl"] textarea {
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+
+  <button id="langSwitch">اردو</button>
+
+  <div class="form-container">
+    <h1 id="pageTitle">Kharij (Withdrawal) Entry</h1>
+    <form id="withdrawForm">
+      <input name="admissionNo" id="admissionNo" placeholder="Admission No" required>
+      <input name="studentName" id="studentName" placeholder="Student Name" required>
+      <input name="class" id="className" placeholder="Class" required>
+      <input name="withdrawalDate" id="withdrawalDate" type="date" required title="Withdrawal Date">
+      <textarea name="reason" id="reason" placeholder="Reason for Withdrawal" required></textarea>
+      <button type="submit" id="submitBtn" class="btn">Submit Withdrawal</button>
+    </form>
+    <button onclick="window.location.href='dashboard.html'" id="backBtn" class="btn">Back to Dashboard</button>
+  </div>
+
+  <script>
+    const url = 'https://script.google.com/macros/s/AKfycbysHurJbhdH0Cn8-1cQhWRCo13IIxN4R9U6LfUFIkqc8qnsT6boq0B4Ujj8nPT1xH75/exec';
+
+    const translations = {
+      en: {
+        pageTitle:'Kharij (Withdrawal) Entry',
+        admissionNo:'Admission No',
+        studentName:'Student Name',
+        className:'Class',
+        reason:'Reason for Withdrawal',
+        submitBtn:'Submit Withdrawal',
+        backBtn:'Back to Dashboard',
+        alertSuccess:'Withdrawal entry submitted successfully',
+        alertError:'Error: ',
+        alertFail:'Request failed: ',
+        langSwitch:'اردو'
+      },
+      ur: {
+        pageTitle:'خارجی اندراج (نکالنا)',
+        admissionNo:'داخلہ نمبر',
+        studentName:'طالب علم کا نام',
+        className:'کلاس',
+        reason:'خارج کرنے کی وجہ',
+        submitBtn:'اندراج جمع کریں',
+        backBtn:'ڈیش بورڈ پر واپس جائیں',
+        alertSuccess:'اندراج کامیابی سے جمع ہو گیا',
+        alertError:'خرابی: ',
+        alertFail:'درخواست ناکام: ',
+        langSwitch:'English'
+      }
+    };
+
+    let currentLang = localStorage.getItem('lang') || 'en';
+
+    function applyLanguage() {
+      const t = translations[currentLang];
+      document.getElementById('pageTitle').innerText = t.pageTitle;
+      document.getElementById('admissionNo').placeholder = t.admissionNo;
+      document.getElementById('studentName').placeholder = t.studentName;
+      document.getElementById('className').placeholder = t.className;
+      document.getElementById('reason').placeholder = t.reason;
+      document.getElementById('submitBtn').innerText = t.submitBtn;
+      document.getElementById('backBtn').innerText = t.backBtn;
+      document.getElementById('langSwitch').innerText = t.langSwitch;
+      
+      const body = document.body;
+      const btn = document.getElementById('langSwitch');
+
+      if (currentLang === 'ur') {
+        body.dir = 'rtl';
+        btn.style.right = 'auto';
+        btn.style.left = '15px';
+      } else {
+        body.dir = 'ltr';
+        btn.style.left = 'auto';
+        btn.style.right = '15px';
+      }
+    }
+
+    document.getElementById('langSwitch').addEventListener('click', () => {
+      currentLang = currentLang === 'en' ? 'ur' : 'en';
+      localStorage.setItem('lang', currentLang);
+      applyLanguage();
+    });
+
+    applyLanguage();
+
+    document.getElementById('withdrawForm').onsubmit = async (e) => {
+      e.preventDefault();
+      const fd = new FormData(e.target);
+      fd.append('action', 'withdrawStudent');
+
+      try {
+        const res = await fetch(url, { method:'POST', body: fd });
+        const data = await res.json();
+        const t = translations[currentLang];
+        if(data.status === 'success'){
+          alert(t.alertSuccess);
+          e.target.reset();
+        } else {
+          alert(t.alertError + data.message);
+        }
+      } catch(err){
+        alert(translations[currentLang].alertFail + err.message);
+      }
+    };
+  </script>
+</body>
+</html>

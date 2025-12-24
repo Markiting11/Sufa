@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>School Leaving Certificate - GPS Kurrar</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+@media print {
+    @page { size: A4 portrait; margin: 0; }
+    .controls { display: none !important; }
+    body { background: #fff; padding: 0; margin: 0; }
+    
+    .certificate {
+        box-shadow: none !important;
+        border: 15px double #1f3c88 !important;
+        height: 297mm;
+        width: 210mm;
+        margin: 0;
+        padding: 40px !important;
+    }
+
+    input[type="date"]::-webkit-calendar-picker-indicator {
+        display: none;
+        -webkit-appearance: none;
+    }
+    input[type="date"], select {
+        border: none;
+        border-bottom: 2px solid #1f3c88;
+        font-family: inherit;
+        font-size: inherit;
+        background: transparent;
+        appearance: none;
+    }
+}
+
+.bw-mode {
+    filter: grayscale(100%) contrast(120%);
+}
+.bw-mode .header-container {
+    background: #fff !important;
+    border-bottom: 4px solid #000 !important;
+}
+.bw-mode .certificate {
+    border-color: #000 !important;
+}
+.bw-mode h1, .bw-mode h2, .bw-mode .location, .bw-mode .editable-span {
+    color: #000 !important;
+}
+.bw-mode .manual-grid {
+    background: #fff !important;
+    border: 1px solid #000 !important;
+}
+
+body {
+    background: #eef2f7;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: "Times New Roman", serif;
+    padding: 20px;
+    margin: 0;
+}
+
+.controls {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 100;
+}
+
+.certificate {
+    width: 100%;
+    max-width: 800px;
+    border: 15px double #1f3c88;
+    padding: 45px;
+    background: #fff;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+    box-sizing: border-box;
+    position: relative;
+    height: 1050px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transition: filter 0.3s ease;
+}
+
+.certificate::after {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; width: 80px; height: 80px;
+    border-top: 10px solid #d4af37;
+    border-left: 10px solid #d4af37;
+    z-index: 2;
+}
+.certificate::before {
+    content: "";
+    position: absolute;
+    bottom: 0; right: 0; width: 80px; height: 80px;
+    border-bottom: 10px solid #d4af37;
+    border-right: 10px solid #d4af37;
+    z-index: 2;
+}
+
+.watermark {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-30deg);
+    width: 450px;
+    opacity: 0.04;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.header-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: linear-gradient(to right, #ffffff, #f0f4ff, #ffffff);
+    padding: 15px;
+    border-radius: 10px;
+    border-bottom: 4px solid #d4af37;
+    margin-bottom: 20px;
+    position: relative;
+    z-index: 3;
+}
+
+.logo {
+    width: 90px;
+    height: 90px;
+    object-fit: contain;
+}
+
+.school-info {
+    text-align: center;
+    flex-grow: 1;
+}
+
+.school-info h1 {
+    color: #1f3c88;
+    font-size: 26px;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    font-weight: 900;
+}
+
+.school-info .location {
+    font-size: 16px;
+    font-weight: bold;
+    color: #d4af37;
+    margin-top: 3px;
+    text-transform: uppercase;
+}
+
+.reg-no {
+    font-size: 13px;
+    font-weight: bold;
+    color: #555;
+    margin-top: 5px;
+    background: #f9f9f9;
+    display: inline-block;
+    padding: 1px 12px;
+    border-radius: 20px;
+    border: 1px solid #ddd;
+}
+
+h2 {
+    text-align: center;
+    font-size: 24px;
+    margin: 5px 0 20px 0;
+    color: #1f3c88;
+    z-index: 3;
+    position: relative;
+    font-weight: bold;
+    letter-spacing: 3px;
+}
+
+h2::after {
+    content: "";
+    display: block;
+    width: 180px;
+    height: 2px;
+    background: #d4af37;
+    margin: 3px auto;
+}
+
+.content {
+    font-size: 18px;
+    line-height: 2.2; 
+    color: #333;
+    position: relative;
+    z-index: 3;
+    text-align: justify;
+}
+
+.meta-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    font-weight: bold;
+    color: #1f3c88;
+    border-bottom: 2px solid #f0f0f0;
+    padding-bottom: 8px;
+}
+
+.editable-span {
+    border-bottom: 2px solid #1f3c88 !important;
+    color: #1f3c88;
+    padding: 0 8px;
+    min-width: 90px;
+    display: inline-block;
+    font-weight: bold;
+    outline: none;
+    text-align: center;
+}
+
+.dob-words {
+    font-style: italic;
+    font-size: 15px;
+    color: #666;
+    display: inline-block;
+    margin-top: 3px;
+    border-left: 4px solid #d4af37;
+    padding-left: 10px;
+}
+
+.manual-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-top: 25px;
+    position: relative;
+    z-index: 3;
+    background: #fdfdfd;
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #eee;
+}
+
+.manual-item {
+    display: flex;
+    align-items: center;
+    font-size: 17px;
+}
+
+.manual-item label {
+    font-weight: bold;
+    color: #1f3c88;
+    margin-right: 12px;
+    min-width: 90px;
+}
+
+.manual-item select,
+.manual-item input {
+    flex-grow: 1;
+    border: none;
+    border-bottom: 2px solid #1f3c88;
+    font-weight: bold;
+    color: #1f3c88;
+    text-align: center;
+    outline: none;
+    font-family: "Times New Roman", serif;
+    font-size: 17px;
+    background: transparent;
+}
+
+.footer {
+    display: flex;
+    justify-content: space-between;
+    margin-top: auto;
+    padding-top: 50px;
+    font-size: 17px;
+    position: relative;
+    z-index: 3;
+}
+
+.footer div {
+    text-align: center;
+    width: 40%;
+    color: #1f3c88;
+}
+
+.sig-line {
+    border-top: 2px solid #1f3c88;
+    width: 100%;
+    display: block;
+    margin-bottom: 8px;
+}
+
+.btn {
+    padding: 12px 25px;
+    color: #fff;
+    border: 2px solid #d4af37;
+    border-radius: 50px;
+    cursor: pointer;
+    font-weight: bold;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    transition: all 0.3s ease;
+    text-align: center;
+}
+
+.print-btn { background: linear-gradient(135deg, #1f3c88 0%, #162d66 100%); }
+.toggle-btn { background: #555; border-color: #ccc; }
+.btn:hover { transform: translateY(-2px); }
+
+strong { color: #000; }
+</style>
+</head>
+
+<body>
+
+<div class="controls">
+    <button class="btn print-btn" onclick="window.print()">🖨️ PRINT SLC</button>
+    <button class="btn toggle-btn" onclick="toggleBW()">🔘 B&W PREVIEW</button>
+</div>
+
+<div class="certificate" id="certBody">
+    <img src="logo edu.png" class="watermark" alt="" onerror="this.style.display='none'">
+
+    <div class="header-container">
+        <img src="logo edu.png" alt="Education Logo" class="logo" onerror="this.style.display='none'">
+        
+        <div class="school-info">
+            <h1 id="schoolName">Government Primary School Kurrar</h1>
+            <div class="location">Tehsil Paharpur, District Dera Ismail Khan</div>
+            <div class="reg-no">EMIS Code / Reg No: 13846</div>
+        </div>
+
+        <div style="width: 90px;"></div> 
+    </div>
+
+    <h2>SCHOOL LEAVING CERTIFICATE</h2>
+
+    <div class="content" id="certText">
+        <p style="text-align:center;">Loading student record...</p>
+    </div>
+
+    <div class="manual-grid">
+        <div class="manual-item">
+            <label>Conduct:</label>
+            <select id="manualConduct">
+                <option value="Excellent">Excellent</option>
+                <option value="Very Good">Very Good</option>
+                <option value="Good">Good</option>
+                <option value="Satisfactory" selected>Satisfactory</option>
+                <option value="Obedient">Obedient</option>
+            </select>
+        </div>
+        <div class="manual-item">
+            <label>Issue Date:</label>
+            <input type="date" id="issueDateInput">
+        </div>
+    </div>
+
+    <div class="footer">
+        <div>
+            <span class="sig-line"></span>
+            <strong>Class Teacher</strong>
+        </div>
+        <div>
+            <span class="sig-line"></span>
+            <strong>Head Teacher / Principal</strong>
+        </div>
+    </div>
+
+</div>
+
+<script>
+// UPDATED URL
+const SCRIPT_URL ='https://script.google.com/macros/s/AKfycbysHurJbhdH0Cn8-1cQhWRCo13IIxN4R9U6LfUFIkqc8qnsT6boq0B4Ujj8nPT1xH75/exec';
+const params = new URLSearchParams(window.location.search);
+const admNo = params.get("admNo") || "";
+
+document.getElementById('issueDateInput').valueAsDate = new Date();
+
+function toggleBW() {
+    document.getElementById('certBody').classList.toggle('bw-mode');
+    const btn = document.querySelector('.toggle-btn');
+    btn.innerHTML = document.getElementById('certBody').classList.contains('bw-mode') ? "🎨 COLOR PREVIEW" : "🔘 B&W PREVIEW";
+}
+
+function dateToWords(dateStr) {
+    if (!dateStr) return "";
+    const date = new Date(dateStr);
+    if (isNaN(date)) return "";
+
+    const day = date.getDate();
+    const month = date.toLocaleString('default', { month: 'long' });
+    const year = date.getFullYear();
+
+    const units = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 
+                   'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
+    const tens = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
+
+    function numToWords(n) {
+        if (n < 20) return units[n];
+        return tens[Math.floor(n / 10)] + (n % 10 !== 0 ? " " + units[n % 10] : "");
+    }
+
+    let yearWord = year >= 2000 ? "Two Thousand " + numToWords(year - 2000) : "Nineteen " + numToWords(year - 1900);
+    return `${numToWords(day)} ${month} ${yearWord}`;
+}
+
+function formatDate(dateStr){
+    if(!dateStr) return "__________";
+    const d = new Date(dateStr);
+    if (isNaN(d)) return dateStr;
+    const dd = String(d.getDate()).padStart(2,'0');
+    const mm = String(d.getMonth()+1).padStart(2,'0');
+    const yyyy = d.getFullYear();
+    return dd + '-' + mm + '-' + yyyy;
+}
+
+function formatDateForInput(dateStr) {
+    if(!dateStr) return "";
+    const d = new Date(dateStr);
+    if (isNaN(d)) return "";
+    return d.toISOString().split('T')[0];
+}
+
+if (admNo) {
+    fetch(SCRIPT_URL, {
+      method: "POST",
+      body: new URLSearchParams({ action: "getStudentByAdm", admissionNo: admNo })
+    })
+    .then(res => res.json())
+    .then(d => {
+      const name = d.studentName || "__________";
+      const father = d.fatherName || "__________";
+      const cls = d.class || "__________";
+      const dobRaw = d.dob;
+      const dobFormatted = formatDate(dobRaw);
+      const dobInWords = dateToWords(dobRaw);
+      const reason = d.reason || "Personal / Domestic";
+      
+      // FETCHING ADMISSION DATE
+      const admDate = formatDate(d.admissionDate); 
+      
+      const withdrawalRaw = d.withdrawalDate;
+      const withdrawalVal = formatDateForInput(withdrawalRaw);
+      const fetchedAdmNo = d.admissionNo || admNo;
+      const certNoFormatted = `GPSK-${fetchedAdmNo}/${new Date().getFullYear()}`;
+
+      document.getElementById("certText").innerHTML = `
+        <div class="meta-row">
+            <span>Admission Registry No: ${fetchedAdmNo}</span>
+            <span>Certificate Sr. No: ${certNoFormatted}</span>
+        </div>
+        <p>This is to certify that <strong>${name}</strong>, 
+        Son/Daughter of <strong>${father}</strong>, 
+        was admitted to this institution on <strong>${admDate}</strong> in Class <strong>${cls}</strong>. 
+        </p>
+        
+        <p>He/She remained a bonafide student of this school and attended class 
+        <span class="editable-span" contenteditable="true">${cls}</span> 
+        until <input type="date" value="${withdrawalVal || formatDateForInput(new Date())}">.
+        At the time of leaving school, he/she was studying in class 
+        <span class="editable-span" contenteditable="true">${cls}</span>. 
+        On account of successful academic completion, he/she is 
+        <strong>Promoted to Class:</strong> <span class="editable-span" contenteditable="true">_________</span>.
+        </p>
+
+        <p>His/Her Date of Birth according to the official School Admission Register is <strong>${dobFormatted}</strong>.
+        <br><span class="dob-words">In words: (${dobInWords})</span>
+        </p>
+
+        <p><strong>Reason for Leaving:</strong> <span class="editable-span" contenteditable="true" style="min-width:250px; text-align:left;">${reason}</span></p>
+      `;
+    })
+    .catch(()=> {
+      document.getElementById("certText").innerHTML = "<p style='color:red; text-align:center;'>⚠ Error: Check Script Connection.</p>";
+    });
+}
+</script>
+
+</body>
+</html>
